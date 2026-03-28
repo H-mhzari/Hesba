@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light only" />
+  <title>منصة حسبة | حاسبات ذكية ومواعيد الرواتب</title>
+  <meta name="description" content="منصة حسبة توفر مواعيد الرواتب والضمان وحساب المواطن مع مجموعة واسعة من الحاسبات المالية والصحية." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --primary-light: #d1fae5;
+      --primary-50: rgba(16,185,129,0.05);
+      --primary-10: rgba(16,185,129,0.10);
+      --primary-20: rgba(16,185,129,0.20);
+      --foreground: #064e3b;
+      --muted: #6b7280;
+      --muted-bg: #f3f4f6;
+      --border: #d1fae5;
+      --white: #ffffff;
+      --radius: 0.75rem;
+    }
+    html { font-family: 'IBM Plex Sans Arabic', sans-serif; background: #ffffff !important; color-scheme: light; }
+    body { min-height: 100vh; color: var(--foreground); background: #ffffff !important; color-scheme: light; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Cairo', sans-serif; font-weight: 700; }
+    a { text-decoration: none; color: inherit; }
+    input, textarea, select, button { font-family: inherit; }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; width: 100%; z-index: 50;
+      transition: all .3s; padding: 1.25rem 0;
+    }
+    header.scrolled {
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06); padding: .75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: .75rem; cursor: pointer; }
+    .logo-icon {
+      background: linear-gradient(135deg, var(--primary), #34d399);
+      color: #fff; padding: .6rem; border-radius: .75rem;
+      box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .3s;
+    }
+    .logo-icon:hover { transform: rotate(-6deg); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+    .logo-text {
+      font-family: 'Cairo', sans-serif; font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), #065f46);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    nav { display: flex; align-items: center; gap: .25rem; }
+    .nav-link {
+      padding: .5rem 1rem; border-radius: .5rem; font-size: .875rem; font-weight: 500;
+      color: var(--muted); transition: all .2s; cursor: pointer;
+    }
+    .nav-link:hover, .nav-link.active { background: var(--primary-10); color: var(--primary); font-weight: 700; }
+    .nav-btn {
+      background: var(--primary); color: #fff; padding: .6rem 1.25rem; border-radius: .5rem;
+      font-size: .875rem; font-weight: 600; border: none; cursor: pointer; margin-right: 1rem;
+      box-shadow: 0 4px 14px rgba(16,185,129,0.3); transition: all .2s;
+    }
+    .nav-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: .5rem; color: var(--foreground); }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu {
+      display: none; position: fixed; top: 0; right: 0; width: 300px; height: 100vh;
+      background: #fff; z-index: 100; padding: 2rem 1.5rem; box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+      transform: translateX(100%); transition: transform .3s;
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 99; }
+    .mobile-overlay.open { display: block; }
+    .mobile-menu-link {
+      display: flex; align-items: center; gap: 1rem; padding: .75rem; border-radius: .75rem;
+      font-size: 1rem; font-weight: 500; margin-bottom: .5rem; cursor: pointer; transition: background .2s;
+    }
+    .mobile-menu-link:hover { background: var(--muted-bg); }
+    .mobile-menu-link svg { color: var(--primary); }
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: block; }
+    }
+
+    /* ── MAIN ── */
+    main { padding-top: 6rem; padding-bottom: 3rem; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-radius: 2.5rem; padding: 3rem; color: #fff;
+      box-shadow: 0 25px 50px rgba(5,150,105,0.2); position: relative; overflow: hidden;
+      margin-bottom: 3rem;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .hero-title { font-size: 2.8rem; font-weight: 900; line-height: 1.2; }
+    .hero-sub { color: rgba(255,255,255,0.8); font-size: 1.1rem; margin-top: .5rem; }
+    .search-wrap { position: relative; width: 100%; max-width: 450px; }
+    .search-icon { position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); }
+    .search-input {
+      width: 100%; height: 3.5rem; padding: 0 3.5rem 0 1.25rem; border-radius: 1rem; border: none;
+      background: rgba(255,255,255,0.95); color: #064e3b; font-size: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15); outline: none; font-family: inherit;
+    }
+    .search-input::placeholder { color: #6ee7b7; }
+    .search-input:focus { box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,255,255,0.2); }
+
+    /* ── COUNTDOWN CARDS ── */
+    .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media (max-width: 900px) { .countdown-grid { grid-template-columns: repeat(2, 1fr); } }
+    .countdown-card {
+      background: rgba(255,255,255,0.1); backdrop-filter: blur(8px); border-radius: 1.5rem;
+      padding: 1.25rem; border: 1px solid rgba(255,255,255,0.2);
+      transition: background .2s; cursor: default;
+    }
+    .countdown-card:hover { background: rgba(255,255,255,0.15); }
+    .countdown-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .countdown-icon { background: rgba(255,255,255,0.2); border-radius: 1rem; padding: .75rem; display: flex; }
+    .countdown-badge {
+      background: rgba(167,243,208,0.2); color: #d1fae5;
+      font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; font-weight: 600;
+    }
+    .countdown-label { color: rgba(255,255,255,0.7); font-size: .8rem; font-weight: 500; }
+    .countdown-num { font-size: 2rem; font-weight: 900; line-height: 1; }
+    .countdown-num span { font-size: 1rem; opacity: .8; }
+    .countdown-desc { color: rgba(255,255,255,0.4); font-size: .65rem; margin-top: .4rem; }
+
+    /* ── TOOLS SECTIONS ── */
+    .section { margin-bottom: 3rem; }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .section-icon { padding: .75rem; border-radius: 1rem; display: flex; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .section-icon.emerald { background: #d1fae5; color: #059669; }
+    .section-icon.rose { background: #ffe4e6; color: #e11d48; }
+    .section-icon.blue { background: #dbeafe; color: #2563eb; }
+    .section-icon.amber { background: #fef3c7; color: #d97706; }
+    .section-title { font-size: 1.5rem; font-weight: 900; }
+    .section-line { height: 4px; width: 3rem; background: var(--primary-20); border-radius: 999px; margin-top: .3rem; }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.25rem; }
+    @media (max-width: 1100px) { .tools-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 768px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 500px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .tool-card {
+      background: #fff; border-radius: 2rem; border: 2px solid rgba(209,250,229,0.5);
+      padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem;
+      cursor: pointer; transition: all .3s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .tool-card:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 20px 40px rgba(16,185,129,0.07); transform: translateY(-6px) scale(1.01); }
+    .tool-icon {
+      width: 4rem; height: 4rem; border-radius: 1.5rem; background: var(--primary-50);
+      color: var(--primary); display: flex; align-items: center; justify-content: center;
+      transition: all .5s;
+    }
+    .tool-card:hover .tool-icon { background: var(--primary); color: #fff; transform: rotate(6deg); }
+    .tool-name { font-weight: 800; font-size: .875rem; line-height: 1.3; color: var(--foreground); transition: color .2s; min-height: 2.5rem; display: flex; align-items: center; }
+    .tool-card:hover .tool-name { color: var(--primary); }
+    .tool-line { width: 2rem; height: 4px; background: #e5e7eb; border-radius: 999px; transition: all .5s; }
+    .tool-card:hover .tool-line { width: 100%; background: var(--primary-20); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 5rem 2rem;
+      background: rgba(243,244,246,0.5); border-radius: 3rem;
+      border: 3px dashed #e5e7eb;
+    }
+    .empty-state h3 { font-size: 1.5rem; font-weight: 900; color: #9ca3af; margin: 1.5rem 0 .5rem; }
+    .empty-state p { color: #9ca3af; }
+
+    /* ── CALCULATOR PAGE ── */
+    .calc-page { max-width: 900px; margin: 0 auto; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      color: var(--muted); font-size: .9rem; font-weight: 500; cursor: pointer;
+      padding: .5rem .75rem; border-radius: .5rem; transition: all .2s; border: none; background: none; margin-bottom: 1.5rem;
+    }
+    .back-btn:hover { color: var(--primary); background: var(--primary-10); }
+    .calc-header { text-align: center; margin-bottom: 2rem; }
+    .calc-icon-wrap {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 1rem; background: var(--primary-10); border-radius: 1.5rem; color: var(--primary); margin-bottom: 1rem;
+    }
+    .calc-title { font-size: 2rem; font-weight: 800; margin-bottom: .5rem; }
+    .calc-desc { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    .calc-card {
+      background: #fff; border-radius: 2rem; border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(16,185,129,0.06); padding: 2rem; margin-bottom: 2rem;
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .4rem; color: var(--foreground); }
+    .form-input {
+      width: 100%; height: 3rem; padding: 0 1rem; border-radius: .75rem; border: 2px solid var(--border);
+      background: #fff; font-size: 1rem; font-family: inherit; color: var(--foreground);
+      transition: border-color .2s, box-shadow .2s; outline: none;
+    }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-10); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .5rem; }
+    .radio-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem; border-radius: .75rem; border: 2px solid transparent;
+      background: var(--muted-bg); cursor: pointer; transition: all .2s;
+    }
+    .radio-option.selected { border-color: var(--primary); background: var(--primary-10); }
+    .radio-option input { accent-color: var(--primary); }
+
+    .toggle-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .toggle-btn {
+      flex: 1; padding: .6rem 1rem; border-radius: .75rem; border: 2px solid var(--border);
+      background: var(--muted-bg); font-family: inherit; font-weight: 600; font-size: .85rem;
+      cursor: pointer; transition: all .2s; color: var(--foreground);
+    }
+    .toggle-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .calc-btn {
+      width: 100%; height: 3.5rem; background: var(--primary); color: #fff; border: none;
+      border-radius: .75rem; font-size: 1.1rem; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: all .2s; margin-top: 1.5rem;
+      box-shadow: 0 8px 20px rgba(16,185,129,0.25);
+    }
+    .calc-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .calc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── RESULT CARDS ── */
+    .result-wrap { margin-top: 1.5rem; }
+    .result-grid { display: grid; gap: 1rem; }
+    .result-grid.cols2 { grid-template-columns: 1fr 1fr; }
+    .result-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 600px) { .result-grid.cols2, .result-grid.cols3 { grid-template-columns: 1fr; } }
+    .result-card {
+      border-radius: 1.25rem; padding: 1.5rem; border: 1px solid; text-align: center;
+      position: relative; overflow: hidden;
+      animation: fadeUp .4s ease;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .result-card.primary { background: var(--primary-50); border-color: var(--primary-20); }
+    .result-card.secondary { background: #eff6ff; border-color: #bfdbfe; }
+    .result-card.accent { background: #fffbeb; border-color: #fde68a; }
+    .result-card-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .5rem; }
+    .result-card-value { font-family: 'Cairo', sans-serif; font-size: 2.2rem; font-weight: 900; }
+    .result-card.primary .result-card-value { color: var(--primary); }
+    .result-card.secondary .result-card-value { color: #2563eb; }
+    .result-card.accent .result-card-value { color: #d97706; }
+
+    .alert-box { padding: 1rem; border-radius: .75rem; margin-top: 1rem; font-size: .9rem; }
+    .alert-box.warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+    .alert-box.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+    /* ── SEO CONTENT ── */
+    .seo-content { margin-top: 2rem; }
+    .seo-content h2, .seo-content h3 { font-size: 1.3rem; color: var(--primary); margin-bottom: .75rem; margin-top: 1.25rem; }
+    .seo-content p { color: var(--muted); line-height: 1.8; margin-bottom: .75rem; }
+    .seo-content ul { color: var(--muted); padding-right: 1.5rem; margin-bottom: .75rem; }
+    .seo-content li { margin-bottom: .4rem; line-height: 1.7; }
+
+    /* ── FAQ ── */
+    .faq-section { margin-top: 2rem; }
+    .faq-title { font-size: 1.5rem; text-align: center; margin-bottom: 1.5rem; }
+    .faq-list { background: #fff; border-radius: 1.5rem; border: 1px solid var(--border); padding: 0 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; cursor: pointer; font-weight: 600; font-size: 1rem; gap: 1rem; }
+    .faq-q:hover { color: var(--primary); }
+    .faq-chevron { transition: transform .3s; flex-shrink: 0; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a { display: none; padding-bottom: 1.25rem; color: var(--muted); line-height: 1.7; }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── ABOUT & CONTACT PAGES ── */
+    .page-header { text-align: center; margin-bottom: 3rem; }
+    .page-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+    .page-header p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+    .about-card { background: #fff; border-radius: 2rem; padding: 2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.06); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .about-card h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .about-card p { color: var(--muted); line-height: 1.8; font-size: 1.05rem; }
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+    .feature-item { display: flex; align-items: center; gap: .75rem; padding: .875rem; background: rgba(16,185,129,0.05); border-radius: .875rem; }
+    .feature-item svg { color: var(--primary); flex-shrink: 0; }
+    .feature-item span { font-weight: 600; }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info { background: linear-gradient(135deg, var(--primary), #0d9488); border-radius: 1.5rem; padding: 2rem; color: #fff; }
+    .contact-info h3 { font-size: 1.25rem; margin-bottom: 1.5rem; }
+    .contact-info-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .contact-info-icon { background: rgba(255,255,255,0.2); border-radius: .75rem; padding: .75rem; display: flex; }
+    .contact-info-label { font-size: .8rem; opacity: .8; }
+    .contact-info-val { font-weight: 600; }
+    .contact-form-card { background: #fff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.08); border: 1px solid var(--border); }
+    .contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .contact-form-row { grid-template-columns: 1fr; } }
+    .form-textarea {
+      width: 100%; min-height: 150px; padding: .875rem 1rem; border-radius: .75rem; border: 2px solid var(--border);
+      background: #fff; font-size: 1rem; font-family: inherit; resize: none; outline: none; color: var(--foreground); transition: border-color .2s, box-shadow .2s;
+    }
+    .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-10); }
+
+    /* ── FOOTER ── */
+    footer { background: #fff; border-top: 1px solid var(--border); margin-top: 2rem; }
+    .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; padding: 3rem 0; }
+    @media (max-width: 768px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-brand p { color: var(--muted); font-size: .875rem; line-height: 1.7; margin-top: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: .5rem; }
+    .footer-logo-icon { background: var(--primary-10); color: var(--primary); padding: .5rem; border-radius: .5rem; display: flex; }
+    .footer-logo-text { font-family: 'Cairo', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+    .footer-col h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: .5rem; }
+    .footer-col a { color: var(--muted); font-size: .875rem; cursor: pointer; transition: color .2s; }
+    .footer-col a:hover { color: var(--primary); }
+    .footer-col .footer-link-icon { display: flex; align-items: center; gap: .5rem; }
+    .footer-bottom { border-top: 1px solid var(--border); padding: 1.5rem 0; text-align: center; color: var(--muted); font-size: .875rem; }
+
+    /* ── SVG ICONS (inline) ── */
+    svg { display: inline-block; vertical-align: middle; }
+
+    /* ── Responsive hero ── */
+    @media (max-width: 768px) {
+      .hero { padding: 2rem 1.5rem; border-radius: 1.75rem; }
+      .hero-title { font-size: 2rem; }
+      .search-wrap { max-width: 100%; }
+    }
+
+    .bmi-status { display: flex; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 1.25rem; border: 1px solid #e5e7eb; background: #f9fafb; }
+    .bmi-status-inner { text-align: center; }
+    .bmi-status-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .5rem; }
+    .bmi-badge { font-size: 1.5rem; font-weight: 800; padding: .5rem 1.25rem; border-radius: .75rem; display: inline-block; }
+    .bmi-normal { background: #d1fae5; color: #065f46; }
+    .bmi-thin { background: #dbeafe; color: #1e3a8a; }
+    .bmi-heavy { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+
+<!-- Mobile overlay -->
+<div class="mobile-overlay" id="overlay" onclick="closeMobileMenu()"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+    <div class="logo-text" style="-webkit-text-fill-color:var(--primary)">حسبة</div>
+    <button onclick="closeMobileMenu()" style="background:none;border:none;cursor:pointer;color:var(--muted)">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu-link" onclick="showPage('home');closeMobileMenu()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    الرئيسية
+  </div>
+  <div class="mobile-menu-link" onclick="showPage('about');closeMobileMenu()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    من نحن
+  </div>
+  <div class="mobile-menu-link" onclick="showPage('contact');closeMobileMenu()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+    اتصل بنا
+  </div>
+  <div style="border-top:1px solid var(--border);padding-top:1.5rem;margin-top:.5rem;">
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem;">أدوات شائعة</p>
+    <div onclick="openCalc('vat');closeMobileMenu()" style="display:block;padding:.5rem 0;color:var(--foreground);cursor:pointer;font-size:.9rem;">حاسبة الضريبة</div>
+    <div onclick="openCalc('bmi');closeMobileMenu()" style="display:block;padding:.5rem 0;color:var(--foreground);cursor:pointer;font-size:.9rem;">حاسبة كتلة الجسم</div>
+  </div>
+</div>
+
+<!-- Header -->
+<header id="header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo" onclick="showPage('home')">
+        <div class="logo-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+        </div>
+        <span class="logo-text">حسبة</span>
+      </div>
+      <nav>
+        <span class="nav-link active" id="nav-home" onclick="showPage('home')">الرئيسية</span>
+        <span class="nav-link" id="nav-about" onclick="showPage('about')">من نحن</span>
+        <span class="nav-link" id="nav-contact" onclick="showPage('contact')">اتصل بنا</span>
+        <button class="nav-btn" onclick="openCalc('mortgage')">جرب الحاسبة العقارية</button>
+      </nav>
+      <button class="hamburger" onclick="openMobileMenu()">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- ═══════════ HOME PAGE ═══════════ -->
+    <div class="page active" id="page-home">
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-top">
+            <div>
+              <h1 class="hero-title">حسبة ذكية لكل قرار</h1>
+              <p class="hero-sub">مواعيد الصرف الرسمية وأكثر من 30 أداة حسابية دقيقة</p>
+            </div>
+            <div class="search-wrap">
+              <div class="search-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+              <input class="search-input" id="searchInput" placeholder="ابحث عن أي حاسبة..." oninput="filterTools(this.value)" />
+            </div>
+          </div>
+          <div class="countdown-grid" id="countdownGrid"></div>
+        </div>
+      </section>
+
+      <!-- Tool Sections -->
+      <div id="toolSections"></div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display:none">
+        <svg width="64" height="64" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <h3>عذراً، لم نجد ما تبحث عنه</h3>
+        <p>جرب البحث بكلمة أخرى أو تصفح الأقسام الرئيسية</p>
+      </div>
+    </div>
+
+    <!-- ═══════════ CALCULATOR PAGE ═══════════ -->
+    <div class="page" id="page-calc">
+      <div class="calc-page">
+        <button class="back-btn" onclick="goBack()">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+          العودة للسابق
+        </button>
+        <div id="calcContent"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ABOUT PAGE ═══════════ -->
+    <div class="page" id="page-about">
+      <div style="max-width:900px;margin:0 auto;">
+        <div class="page-header">
+          <h1>من نحن</h1>
+          <p>منصة "حسبة" هي وجهتك الرقمية الأولى للأدوات والحاسبات الذكية التي تهدف إلى تبسيط حياتك اليومية. نؤمن بأن الأرقام المعقدة يجب أن تكون بسيطة ومتاحة للجميع.</p>
+        </div>
+        <div class="about-card">
+          <h2>رؤيتنا</h2>
+          <p>نسعى لتمكين المستخدم العربي من خلال توفير أدوات دقيقة وموثوقة تساعده في اتخاذ القرارات المالية، الصحية، والشخصية بثقة تامة.</p>
+          <h2 style="margin-top:1.5rem">لماذا تختار حسبة؟</h2>
+          <div class="features-grid">
+            ${["دقة عالية في الحسابات","واجهة سهلة الاستخدام وتصميم عصري","تحديث مستمر للأدوات وفق الأنظمة","خصوصية تامة لبياناتك","دعم فني وتجاوب سريع","مجانية بالكامل للجميع"].map(f => `
+            <div class="feature-item">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>${f}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CONTACT PAGE ═══════════ -->
+    <div class="page" id="page-contact">
+      <div style="max-width:1000px;margin:0 auto;">
+        <div class="page-header">
+          <h1>تواصل معنا</h1>
+          <p>نحن هنا للإجابة على استفساراتك. لا تتردد في مراسلتنا لأي اقتراح أو مشكلة تواجهها في استخدام الموقع.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3>معلومات التواصل</h3>
+            <div class="contact-info-item">
+              <div class="contact-info-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+              </div>
+              <div>
+                <div class="contact-info-label">البريد الإلكتروني</div>
+                <div class="contact-info-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96fff8f0f9d6feffe5f4f7b8f5f9fb">[email&#160;protected]</a></div>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <div class="contact-info-label">الهاتف</div>
+                <div class="contact-info-val">+966 50 000 0000</div>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-info-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="contact-info-label">الموقع</div>
+                <div class="contact-info-val">الرياض، المملكة العربية السعودية</div>
+              </div>
+            </div>
+          </div>
+          <div class="contact-form-card">
+            <div class="contact-form-row">
+              <div class="form-group">
+                <label class="form-label">الاسم الكامل</label>
+                <input class="form-input" placeholder="أحمد محمد" id="c-name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني</label>
+                <input class="form-input" placeholder="name@example.com" type="email" id="c-email" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الموضوع</label>
+              <input class="form-input" placeholder="استفسار بخصوص..." id="c-subject" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">الرسالة</label>
+              <textarea class="form-textarea" placeholder="اكتب رسالتك هنا..." id="c-msg"></textarea>
+            </div>
+            <button class="calc-btn" onclick="submitContact()">
+              إرسال الرسالة &nbsp;
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline-block"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+            <div id="contactSuccess" style="display:none;" class="alert-box success" style="margin-top:1rem">✅ تم إرسال رسالتك بنجاح! سنرد عليك قريباً.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/></svg>
+          </div>
+          <span class="footer-logo-text">حسبة</span>
+        </div>
+        <p>منصتك الأولى للأدوات والحاسبات الدقيقة التي تساعدك في حياتك اليومية والمالية والصحية.</p>
+      </div>
+      <div class="footer-col">
+        <h3>روابط سريعة</h3>
+        <ul>
+          <li><a onclick="showPage('home')">الرئيسية</a></li>
+          <li><a onclick="showPage('about')">من نحن</a></li>
+          <li><a onclick="showPage('contact')">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>الأقسام</h3>
+        <ul>
+          <li><a onclick="showPage('home')">أدوات مالية</a></li>
+          <li><a onclick="showPage('home')">أدوات صحية</a></li>
+          <li><a onclick="showPage('home')">أدوات التاريخ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>قانوني</h3>
+        <ul>
+          <li><a class="footer-link-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            سياسة الخصوصية</a></li>
+          <li><a class="footer-link-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            شروط الاستخدام</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="footerYear"></span> حسبة. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ─── DATA ───────────────────────────────────────────────
+const categories = [
+  { id:"financial", title:"أدوات مالية", iconColor:"emerald",
+    icon:`<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>`,
+    tools:[
+      {name:"حاسبة التمويل العقاري", id:"mortgage", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`},
+      {name:"حاسبة القيمة المضافة", id:"vat", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`},
+      {name:"مكافأة نهاية الخدمة", id:"eos", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`},
+      {name:"حاسبة الراتب", id:"salary", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`},
+      {name:"حاسبة الزكاة", id:"zakat", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`},
+      {name:"حاسبة القرض الشخصي", id:"loan", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`},
+      {name:"حاسبة هدف الادخار", id:"savings", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
+      {name:"حاسبة الفائدة المركبة", id:"compound", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`},
+      {name:"حاسبة نسبة الربح", id:"profit", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>`},
+    ]
+  },
+  { id:"health", title:"أدوات صحية", iconColor:"rose",
+    icon:`<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    tools:[
+      {name:"حساب كتلة الجسم", id:"bmi", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`},
+      {name:"السعرات الحرارية", id:"calories", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`},
+    ]
+  },
+  { id:"utility", title:"أدوات عامة", iconColor:"blue",
+    icon:`<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>`,
+    tools:[
+      {name:"النسبة المئوية", id:"percentage", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`},
+      {name:"محول الوحدات", id:"units", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 3 9 15"/><path d="M12 3H3v9"/><path d="m3 21 9-12"/><path d="M12 21h9v-9"/></svg>`},
+    ]
+  },
+  { id:"dates", title:"التاريخ والوقت", iconColor:"amber",
+    icon:`<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    tools:[
+      {name:"حساب العمر", id:"age", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`},
+      {name:"الفرق بين تاريخين", id:"datediff", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`},
+      {name:"تحويل التاريخ", id:"dateconv", icon:`<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`},
+    ]
+  }
+];
+
+// ─── COUNTDOWN ─────────────────────────────────────────
+function getDaysUntil(day) {
+  const today = new Date();
+  let target = new Date(today.getFullYear(), today.getMonth(), day);
+  if (today.getDate() > day) {
+    target = new Date(today.getFullYear(), today.getMonth() + 1, day);
+  }
+  return Math.ceil((target - today) / (1000*60*60*24));
+}
+
+const countdowns = [
+  { label:"راتب الحكومة", day:27, icon:`<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`, desc:"يوم 27 من كل شهر" },
+  { label:"حساب المواطن", day:10, icon:`<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`, desc:"يوم 10 من كل شهر" },
+  { label:"راتب التقاعد", day:1, icon:`<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`, desc:"يوم 1 من كل شهر" },
+  { label:"الضمان الاجتماعي", day:1, icon:`<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`, desc:"يوم 1 من كل شهر" },
+];
+
+function renderCountdown() {
+  const grid = document.getElementById('countdownGrid');
+  grid.innerHTML = countdowns.map(c => `
+    <div class="countdown-card">
+      <div class="countdown-top">
+        <div class="countdown-icon">${c.icon}</div>
+        <span class="countdown-badge">نشط</span>
+      </div>
+      <div class="countdown-label">${c.label}</div>
+      <div class="countdown-num">${getDaysUntil(c.day)} <span>يوم</span></div>
+      <div class="countdown-desc">${c.desc}</div>
+    </div>`).join('');
+}
+
+// ─── TOOLS RENDER ───────────────────────────────────────
+function renderTools(cats) {
+  const sec = document.getElementById('toolSections');
+  const empty = document.getElementById('emptyState');
+  if (!cats || cats.length === 0) {
+    sec.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  sec.innerHTML = cats.map(cat => `
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon ${cat.iconColor}">${cat.icon}</div>
+        <div>
+          <div class="section-title">${cat.title}</div>
+          <div class="section-line"></div>
+        </div>
+      </div>
+      <div class="tools-grid">
+        ${cat.tools.map(t => `
+          <div class="tool-card" onclick="openCalc('${t.id}')">
+            <div class="tool-icon">${t.icon}</div>
+            <div class="tool-name">${t.name}</div>
+            <div class="tool-line"></div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function filterTools(q) {
+  if (!q.trim()) { renderTools(categories); return; }
+  const filtered = categories.map(c => ({...c, tools: c.tools.filter(t => t.name.includes(q))})).filter(c => c.tools.length > 0);
+  renderTools(filtered);
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────
+let prevPage = 'home';
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const nl = document.getElementById('nav-' + name);
+  if (nl) nl.classList.add('active');
+  window.scrollTo(0,0);
+}
+function goBack() { showPage('home'); }
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ─── SCROLL HEADER ──────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ─── CALC DEFINITIONS ───────────────────────────────────
+const calcs = {
+
+  mortgage: {
+    title: "حاسبة التمويل العقاري",
+    desc: "احسب القسط الشهري لتمويلك العقاري بدقة",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    form: `
+      <div class="form-group"><label class="form-label">مبلغ التمويل</label><input class="form-input" type="number" id="f-amount" placeholder="مثلاً: 500,000" /></div>
+      <div class="form-group"><label class="form-label">نسبة الربح السنوية (%)</label><input class="form-input" type="number" id="f-rate" placeholder="مثلاً: 3.5" /></div>
+      <div class="form-group"><label class="form-label">مدة التمويل (بالسنوات)</label><input class="form-input" type="number" id="f-years" placeholder="مثلاً: 20" /></div>`,
+    calc() {
+      const p = +document.getElementById('f-amount').value;
+      const r = +document.getElementById('f-rate').value / 100 / 12;
+      const n = +document.getElementById('f-years').value * 12;
+      if (p>0&&r>0&&n>0) {
+        const m = (p*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+        return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">القسط الشهري المتوقع</div><div class="result-card-value">${m.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div></div>`;
+      }
+    },
+    seo: `<h2>كيفية حساب التمويل العقاري</h2><p>تساعدك هذه الحاسبة في تقدير القسط الشهري بناءً على قيمة العقار، مدة التمويل، ونسبة الربح السنوية.</p>`,
+  },
+
+  vat: {
+    title: "حاسبة ضريبة القيمة المضافة",
+    desc: "احسب قيمة الضريبة المضافة (15%) بسهولة، سواء كان المبلغ شامل الضريبة أو غير شامل.",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+    form: `
+      <div class="form-group"><label class="form-label">نوع العملية</label>
+        <div class="radio-group">
+          <label class="radio-option selected" id="vat-ex-lbl"><span>المبلغ غير شامل الضريبة</span><input type="radio" name="vatmode" value="exclusive" checked onchange="vatModeChange(this)"/></label>
+          <label class="radio-option" id="vat-in-lbl"><span>المبلغ شامل الضريبة</span><input type="radio" name="vatmode" value="inclusive" onchange="vatModeChange(this)"/></label>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">المبلغ (ريال سعودي)</label><input class="form-input" type="number" id="f-vamt" placeholder="أدخل المبلغ هنا..." style="height:3.5rem;font-size:1.1rem" /></div>`,
+    calc() {
+      const val = +document.getElementById('f-vamt').value;
+      if (isNaN(val)||val<=0) return;
+      const mode = document.querySelector('input[name=vatmode]:checked').value;
+      const fmt = n => n.toLocaleString('ar-SA',{style:'currency',currency:'SAR',maximumFractionDigits:2});
+      let orig, vat, total;
+      if (mode==='exclusive') { orig=val; vat=val*.15; total=val*1.15; }
+      else { orig=val/1.15; vat=val-orig; total=val; }
+      return `<div class="result-grid cols3">
+        <div class="result-card secondary"><div class="result-card-label">المبلغ الأصلي</div><div class="result-card-value">${fmt(orig)}</div></div>
+        <div class="result-card accent"><div class="result-card-label">قيمة الضريبة (15%)</div><div class="result-card-value">${fmt(vat)}</div></div>
+        <div class="result-card primary"><div class="result-card-label">الإجمالي</div><div class="result-card-value">${fmt(total)}</div></div>
+      </div>`;
+    },
+    faqs:[
+      {q:"كم نسبة ضريبة القيمة المضافة في السعودية؟", a:"النسبة الحالية المطبقة هي 15% على معظم السلع والخدمات."},
+      {q:"كيف أحسب الضريبة من المبلغ الإجمالي؟", a:"قم بقسمة المبلغ الإجمالي على 1.15 للحصول على المبلغ الأصلي، والفرق هو قيمة الضريبة."},
+    ],
+    seo:`<h2>كيفية حساب ضريبة القيمة المضافة في السعودية</h2><p>ضريبة القيمة المضافة في المملكة 15%. يمكن حسابها بطريقتين: إما إضافة 15% على المبلغ الأصلي، أو استخراج الضريبة من المبلغ الإجمالي.</p><ul><li><strong>المبلغ غير شامل:</strong> الضريبة = المبلغ × 0.15</li><li><strong>المبلغ شامل:</strong> الأصلي = الإجمالي ÷ 1.15</li></ul>`,
+  },
+
+  eos: {
+    title: "حاسبة مكافأة نهاية الخدمة",
+    desc: "احسب مكافأتك حسب نظام العمل السعودي",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+    form: `
+      <div class="form-group"><label class="form-label">الراتب الأخير (شاملاً البدلات)</label><input class="form-input" type="number" id="f-sal" /></div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">عدد السنوات</label><input class="form-input" type="number" id="f-yr" /></div>
+        <div class="form-group"><label class="form-label">عدد الأشهر</label><input class="form-input" type="number" id="f-mo" /></div>
+      </div>`,
+    calc() {
+      const s = +document.getElementById('f-sal').value||0;
+      const y = +document.getElementById('f-yr').value||0;
+      const m = +document.getElementById('f-mo').value||0;
+      const tot = y + m/12;
+      let r = tot<=5 ? tot*(s/2) : 5*(s/2)+(tot-5)*s;
+      return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">المكافأة التقريبية</div><div class="result-card-value">${r.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div></div>`;
+    },
+    seo:`<h2>مكافأة نهاية الخدمة في نظام العمل</h2><p>تعتبر مكافأة نهاية الخدمة حقاً للموظف على صاحب العمل عند انتهاء عقد العمل. تُحسب بمعدل نصف شهر لكل سنة خلال أول 5 سنوات وشهر كامل عن كل سنة بعدها.</p>`,
+  },
+
+  salary: {
+    title: "حاسبة الراتب",
+    desc: "احسب صافي راتبك بعد البدلات والخصومات",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">الراتب الأساسي</label><input class="form-input" type="number" id="f-basic" /></div>
+      <div class="form-group"><label class="form-label">بدل السكن</label><input class="form-input" type="number" id="f-housing" /></div>
+      <div class="form-group"><label class="form-label">بدل النقل</label><input class="form-input" type="number" id="f-trans" /></div>
+      <div class="form-group"><label class="form-label">خصومات أخرى (تأمينات، إلخ)</label><input class="form-input" type="number" id="f-ded" /></div>`,
+    calc() {
+      const b=+document.getElementById('f-basic').value||0, h=+document.getElementById('f-housing').value||0,
+            t=+document.getElementById('f-trans').value||0, d=+document.getElementById('f-ded').value||0;
+      const tot = b+h+t-d;
+      return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">صافي الراتب</div><div class="result-card-value">${tot.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div></div>`;
+    },
+    seo:`<h2>أهمية حساب الراتب بدقة</h2><p>يساعدك فهم تفاصيل راتبك في التخطيط المالي السليم. يشمل الراتب عادةً الأساس والبدلات مطروحاً منه الاستقطاعات والتأمينات.</p>`,
+  },
+
+  zakat: {
+    title: "حاسبة الزكاة",
+    desc: "احسب زكاة مالك بدقة وسهولة",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">إجمالي الأموال (نقد، ذهب للادخار، أسهم)</label><input class="form-input" type="number" id="f-wealth" /></div>
+      <div class="form-group"><label class="form-label">سعر جرام الذهب الحالي (عيار 24) لتقدير النصاب</label><input class="form-input" type="number" id="f-gold" value="250" /></div>`,
+    calc() {
+      const w=+document.getElementById('f-wealth').value||0, g=+document.getElementById('f-gold').value||250;
+      const nisab = g*85;
+      if (w<nisab) return `<div class="alert-box warning">لم يبلغ مالك النصاب الحالي (${nisab.toLocaleString()} ريال). لا تجب الزكاة حالياً.</div>`;
+      const z = w*0.025;
+      return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">مبلغ الزكاة المستحق</div><div class="result-card-value">${z.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div></div>`;
+    },
+    seo:`<h2>كيفية حساب زكاة المال</h2><p>تجب الزكاة على الأموال التي بلغت النصاب وحال عليها الحول. النصاب يعادل 85 جرام ذهب. مقدار الزكاة 2.5% من إجمالي الأموال.</p>`,
+  },
+
+  loan: {
+    title: "حاسبة القرض الشخصي",
+    desc: "احسب القسط الشهري والفوائد لقرضك الشخصي",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">مبلغ القرض</label><input class="form-input" type="number" id="f-lamount" /></div>
+      <div class="form-group"><label class="form-label">نسبة الربح السنوية (ثابتة %)</label><input class="form-input" type="number" id="f-lrate" /></div>
+      <div class="form-group"><label class="form-label">مدة التمويل (بالأشهر)</label><input class="form-input" type="number" id="f-lmonths" /></div>`,
+    calc() {
+      const p=+document.getElementById('f-lamount').value, r=+document.getElementById('f-lrate').value/100,
+            n=+document.getElementById('f-lmonths').value;
+      if (p>0&&r>0&&n>0) {
+        const ti=p*r*(n/12), tp=p+ti, mo=tp/n;
+        return `<div class="result-grid">
+          <div class="result-card primary"><div class="result-card-label">القسط الشهري</div><div class="result-card-value">${mo.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div>
+          <div class="result-grid cols2" style="grid-column:1/-1">
+            <div class="result-card secondary"><div class="result-card-label">إجمالي الفوائد</div><div class="result-card-value">${ti.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div></div>
+            <div class="result-card accent"><div class="result-card-label">إجمالي المبلغ</div><div class="result-card-value">${tp.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div></div>
+          </div></div>`;
+      }
+    },
+    seo:`<h2>حساب القروض الشخصية</h2><p>تعتمد معظم البنوك في المملكة على النسبة الثابتة لحساب مرابحة القروض الشخصية.</p>`,
+  },
+
+  savings: {
+    title: "حاسبة هدف الادخار",
+    desc: "حدد المدة الزمنية اللازمة للوصول إلى هدفك المالي",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">المبلغ المستهدف (ريال)</label><input class="form-input" type="number" id="f-goal" /></div>
+      <div class="form-group"><label class="form-label">المبلغ المتوفر حالياً (ريال)</label><input class="form-input" type="number" id="f-curr" /></div>
+      <div class="form-group"><label class="form-label">المبلغ المدخر شهرياً (ريال)</label><input class="form-input" type="number" id="f-mthly" /></div>`,
+    calc() {
+      const g=+document.getElementById('f-goal').value, c=+document.getElementById('f-curr').value||0, m=+document.getElementById('f-mthly').value;
+      if (g>c&&m>0) {
+        const mo = Math.ceil((g-c)/m);
+        return `<div class="result-grid cols2">
+          <div class="result-card primary"><div class="result-card-label">المدة المطلوبة</div><div class="result-card-value">${mo} شهر</div></div>
+          <div class="result-card secondary"><div class="result-card-label">بالسنوات تقريباً</div><div class="result-card-value">${(mo/12).toFixed(1)} سنة</div></div>
+        </div>`;
+      }
+    },
+    seo:`<h2>أهمية وضع أهداف ادخار</h2><p>يساعدك تحديد هدف مالي واضح في الالتزام بخطة الادخار وتحقيق أحلامك بشكل أسرع.</p>`,
+  },
+
+  compound: {
+    title: "حاسبة الفائدة المركبة",
+    desc: "احسب نمو استثماراتك مع مرور الوقت",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">المبلغ الأولي (ريال)</label><input class="form-input" type="number" id="f-cp" /></div>
+      <div class="form-group"><label class="form-label">نسبة الربح السنوية (%)</label><input class="form-input" type="number" id="f-cr" /></div>
+      <div class="form-group"><label class="form-label">المدة (بالسنوات)</label><input class="form-input" type="number" id="f-ct" /></div>`,
+    calc() {
+      const p=+document.getElementById('f-cp').value, r=+document.getElementById('f-cr').value/100, t=+document.getElementById('f-ct').value;
+      if (p>0&&r>0&&t>0) {
+        const res = p*Math.pow(1+r,t);
+        return `<div class="result-grid cols2">
+          <div class="result-card primary"><div class="result-card-label">المبلغ الإجمالي المتوقع</div><div class="result-card-value">${Math.round(res).toLocaleString('ar-SA')} ريال</div></div>
+          <div class="result-card secondary"><div class="result-card-label">إجمالي الأرباح</div><div class="result-card-value">${Math.round(res-p).toLocaleString('ar-SA')} ريال</div></div>
+        </div>`;
+      }
+    },
+    seo:`<h2>قوة الفائدة المركبة</h2><p>تعتبر الفائدة المركبة من أقوى الأدوات المالية لزيادة الثروة على المدى الطويل. مع كل دورة، تنمو الأرباح على رأس المال الأصلي والأرباح السابقة.</p>`,
+  },
+
+  profit: {
+    title: "حاسبة نسبة الربح",
+    desc: "احسب هامش الربح الإجمالي والصافي لمشاريعك",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">التكلفة الإجمالية</label><input class="form-input" type="number" id="f-cost" /></div>
+      <div class="form-group"><label class="form-label">سعر البيع (الإيرادات)</label><input class="form-input" type="number" id="f-rev" /></div>`,
+    calc() {
+      const c=+document.getElementById('f-cost').value, r=+document.getElementById('f-rev').value;
+      if (r>0&&c>0) {
+        const profit=r-c, margin=(profit/r)*100;
+        return `<div class="result-grid cols2">
+          <div class="result-card primary"><div class="result-card-label">مبلغ الربح</div><div class="result-card-value">${profit.toLocaleString('ar-SA',{maximumFractionDigits:0})} ريال</div></div>
+          <div class="result-card secondary"><div class="result-card-label">هامش الربح</div><div class="result-card-value">${margin.toFixed(2)}%</div></div>
+        </div>`;
+      }
+    },
+    seo:`<h2>أهمية هامش الربح</h2><p>يساعد هامش الربح في تقييم كفاءة النشاط التجاري وقدرته على تغطية التكاليف التشغيلية.</p>`,
+  },
+
+  bmi: {
+    title: "حاسبة كتلة الجسم (BMI)",
+    desc: "أداة لحساب مؤشر كتلة الجسم لمعرفة ما إذا كان وزنك صحياً.",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+    form:`
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">الوزن (كجم)</label><input class="form-input" type="number" id="f-wt" placeholder="مثال: 75" style="height:3.5rem" /></div>
+        <div class="form-group"><label class="form-label">الطول (سم)</label><input class="form-input" type="number" id="f-ht" placeholder="مثال: 170" style="height:3.5rem" /></div>
+      </div>`,
+    calc() {
+      const w=+document.getElementById('f-wt').value, h=+document.getElementById('f-ht').value/100;
+      if (w>0&&h>0) {
+        const bmi=w/(h*h);
+        let status='', cls='';
+        if (bmi<18.5){status='نحافة';cls='bmi-thin';}
+        else if(bmi<25){status='وزن طبيعي';cls='bmi-normal';}
+        else if(bmi<30){status='وزن زائد';cls='bmi-heavy';}
+        else{status='سمنة';cls='bmi-heavy';}
+        return `<div class="result-grid cols2">
+          <div class="result-card primary"><div class="result-card-label">مؤشر كتلة الجسم</div><div class="result-card-value">${bmi.toFixed(1)}</div></div>
+          <div class="bmi-status"><div class="bmi-status-inner"><div class="bmi-status-label">التصنيف</div><span class="bmi-badge ${cls}">${status}</span></div></div>
+        </div>`;
+      }
+    },
+    faqs:[{q:"هل مؤشر كتلة الجسم دقيق للجميع؟",a:"يعتبر مؤشراً عاماً جيداً، لكنه قد لا يكون دقيقاً للرياضيين ذوي الكتل العضلية العالية أو النساء الحوامل."}],
+    seo:`<h2>ما هو مؤشر كتلة الجسم؟</h2><p>مؤشر كتلة الجسم (BMI) هو ناتج قسمة الوزن بالكيلوغرام على مربع الطول بالمتر.</p><ul><li>أقل من 18.5: نحافة</li><li>18.5–24.9: وزن طبيعي</li><li>25–29.9: زيادة في الوزن</li><li>30 فأكثر: سمنة</li></ul>`,
+  },
+
+  calories: {
+    title: "حساب السعرات الحرارية",
+    desc: "احسب احتياجك اليومي من السعرات الحرارية (BMR)",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`,
+    form:`
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">الوزن (كجم)</label><input class="form-input" type="number" id="f-cw" /></div>
+        <div class="form-group"><label class="form-label">الطول (سم)</label><input class="form-input" type="number" id="f-ch" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">العمر</label><input class="form-input" type="number" id="f-ca" /></div>
+      <div class="form-group"><label class="form-label">الجنس</label>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="tbm" onclick="toggleGender('male')">ذكر</button>
+          <button class="toggle-btn" id="tbf" onclick="toggleGender('female')">أنثى</button>
+        </div>
+      </div>`,
+    calc() {
+      const w=+document.getElementById('f-cw').value, h=+document.getElementById('f-ch').value, a=+document.getElementById('f-ca').value;
+      const g=document.getElementById('tbm').classList.contains('active')?'male':'female';
+      if (w>0&&h>0&&a>0) {
+        let bmr = g==='male' ? 10*w+6.25*h-5*a+5 : 10*w+6.25*h-5*a-161;
+        const tdee = bmr*1.375;
+        return `<div class="result-grid">
+          <div class="result-card primary"><div class="result-card-label">احتياجك اليومي التقريبي</div><div class="result-card-value">${Math.round(tdee).toLocaleString('ar-SA')} سعرة</div></div>
+        </div>`;
+      }
+    },
+    seo:`<h2>كيف يتم حساب السعرات؟</h2><p>تعتمد المعادلة على وزنك، طولك، وعمرك لتقدير معدل الأيض الأساسي (BMR) ثم ضربه في معامل النشاط.</p>`,
+  },
+
+  percentage: {
+    title: "حساب النسبة المئوية",
+    desc: "احسب النسبة المئوية من أي عدد بسهولة",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">العدد الأصلي</label><input class="form-input" type="number" id="f-pval" /></div>
+      <div class="form-group"><label class="form-label">النسبة المئوية (%)</label><input class="form-input" type="number" id="f-pct" /></div>`,
+    calc() {
+      const v=+document.getElementById('f-pval').value, p=+document.getElementById('f-pct').value;
+      if (!isNaN(v)&&!isNaN(p)) {
+        return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">النتيجة</div><div class="result-card-value">${((v*p)/100).toLocaleString('ar-SA',{maximumFractionDigits:4})}</div></div></div>`;
+      }
+    },
+    seo:`<h2>استخدامات النسبة المئوية</h2><p>تستخدم النسبة المئوية في حساب الخصومات، الضرائب، والزيادات السنوية.</p>`,
+  },
+
+  units: {
+    title: "محول الوحدات",
+    desc: "حول بين وحدات القياس المختلفة بسهولة",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 3 9 15"/><path d="M12 3H3v9"/><path d="m3 21 9-12"/><path d="M12 21h9v-9"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">القيمة</label><input class="form-input" type="number" id="f-uval" /></div>
+      <div class="form-group"><label class="form-label">نوع التحويل</label>
+        <div class="toggle-group" style="flex-wrap:wrap">
+          <button class="toggle-btn active" id="utb0" onclick="setUnit(0,'mToKm')">م ← كم</button>
+          <button class="toggle-btn" id="utb1" onclick="setUnit(1,'kmToM')">كم ← م</button>
+          <button class="toggle-btn" id="utb2" onclick="setUnit(2,'kgToG')">كجم ← جم</button>
+          <button class="toggle-btn" id="utb3" onclick="setUnit(3,'gToKg')">جم ← كجم</button>
+        </div>
+      </div>`,
+    calc() {
+      const v=+document.getElementById('f-uval').value;
+      if (isNaN(v)) return;
+      const active = document.querySelector('#utb0.active,#utb1.active,#utb2.active,#utb3.active');
+      const type = active ? active.dataset.utype : 'mToKm';
+      let res;
+      if(type==='mToKm') res=v/1000;
+      else if(type==='kmToM') res=v*1000;
+      else if(type==='kgToG') res=v*1000;
+      else res=v/1000;
+      return `<div class="result-grid"><div class="result-card primary"><div class="result-card-label">النتيجة</div><div class="result-card-value">${res.toLocaleString('ar-SA',{maximumFractionDigits:6})}</div></div></div>`;
+    },
+    seo:`<h2>التحويل بين الوحدات</h2><p>يساعدك هذا المحول في فهم المقاييس المختلفة وتحويلها بدقة للعمل أو الدراسة.</p>`,
+  },
+
+  age: {
+    title: "حساب العمر",
+    desc: "احسب عمرك بالسنوات والأشهر والأيام بدقة",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    form:`<div class="form-group"><label class="form-label">تاريخ الميلاد</label><input class="form-input" type="date" id="f-birth" /></div>`,
+    calc() {
+      const birth = document.getElementById('f-birth').value;
+      if (!birth) return;
+      const b=new Date(birth), today=new Date();
+      let y=today.getFullYear()-b.getFullYear(), m=today.getMonth()-b.getMonth(), d=today.getDate()-b.getDate();
+      if(d<0){m--;const lm=new Date(today.getFullYear(),today.getMonth(),0);d+=lm.getDate();}
+      if(m<0){y--;m+=12;}
+      return `<div class="result-grid cols3">
+        <div class="result-card primary"><div class="result-card-label">سنة</div><div class="result-card-value">${y}</div></div>
+        <div class="result-card secondary"><div class="result-card-label">شهر</div><div class="result-card-value">${m}</div></div>
+        <div class="result-card accent"><div class="result-card-label">يوم</div><div class="result-card-value">${d}</div></div>
+      </div>`;
+    },
+    seo:`<h2>كيف يتم حساب العمر؟</h2><p>تعتمد الحاسبة على الفرق بين تاريخ ميلادك والتاريخ الحالي، مع مراعاة السنوات الكبيسة واختلاف أيام الأشهر.</p>`,
+  },
+
+  datediff: {
+    title: "الفرق بين تاريخين",
+    desc: "احسب عدد السنوات والأسابيع والأيام بين تاريخين محددين",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">التاريخ الأول</label><input class="form-input" type="date" id="f-d1" /></div>
+      <div class="form-group"><label class="form-label">التاريخ الثاني</label><input class="form-input" type="date" id="f-d2" /></div>`,
+    calc() {
+      const d1=document.getElementById('f-d1').value, d2=document.getElementById('f-d2').value;
+      if (!d1||!d2) return;
+      const diff = Math.abs(new Date(d1)-new Date(d2));
+      const days = Math.round(diff/(1000*60*60*24));
+      const years=Math.floor(days/365.25), rem=Math.floor(days%365.25), weeks=Math.floor(rem/7), remDays=rem%7;
+      return `<div>
+        <div class="result-grid cols3">
+          <div class="result-card primary"><div class="result-card-label">الفرق بالسنوات</div><div class="result-card-value">${years} سنة</div></div>
+          <div class="result-card secondary"><div class="result-card-label">الفرق بالأسابيع</div><div class="result-card-value">${weeks} أسبوع</div></div>
+          <div class="result-card accent"><div class="result-card-label">الفرق بالأيام</div><div class="result-card-value">${remDays} يوم</div></div>
+        </div>
+        <div style="margin-top:1rem"><div class="result-card primary"><div class="result-card-label">إجمالي الأيام</div><div class="result-card-value">${days.toLocaleString('ar-SA')} يوم</div></div></div>
+      </div>`;
+    },
+    seo:`<h2>أهمية حساب فرق الأيام</h2><p>يساعدك هذا الحساب في تخطيط المواعيد النهائية وحساب مدد الإجازات أو معرفة المتبقي لمناسبة معينة.</p>`,
+  },
+
+  dateconv: {
+    title: "تحويل التاريخ",
+    desc: "حول التاريخ بين الهجري والميلادي بدقة عالية باستخدام معايير أم القرى",
+    icon: `<svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    form:`
+      <div class="form-group"><label class="form-label">نوع التحويل</label>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="dcG" onclick="setDateConvType('gregorianToHijri')">ميلادي ← هجري</button>
+          <button class="toggle-btn" id="dcH" onclick="setDateConvType('hijriToGregorian')">هجري ← ميلادي</button>
+        </div>
+      </div>
+      <div id="dc-greg-fields">
+        <p style="font-size:.82rem;color:#6b7280;margin-bottom:.75rem;background:#f0fdf4;padding:.6rem 1rem;border-radius:.5rem;">📅 أدخل التاريخ الميلادي</p>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">اليوم</label><input class="form-input" type="number" id="dc-gd" placeholder="مثال: 15" min="1" max="31" /></div>
+          <div class="form-group"><label class="form-label">الشهر</label>
+            <select class="form-input" id="dc-gm">
+              <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
+              <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
+              <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
+              <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">السنة</label><input class="form-input" type="number" id="dc-gy" placeholder="مثال: 2025" min="1900" max="2100" /></div>
+      </div>
+      <div id="dc-hijri-fields" style="display:none">
+        <p style="font-size:.82rem;color:#6b7280;margin-bottom:.75rem;background:#f0fdf4;padding:.6rem 1rem;border-radius:.5rem;">🌙 أدخل التاريخ الهجري</p>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">اليوم</label><input class="form-input" type="number" id="dc-hd" placeholder="مثال: 15" min="1" max="30" /></div>
+          <div class="form-group"><label class="form-label">الشهر</label>
+            <select class="form-input" id="dc-hm">
+              <option value="1">محرم</option><option value="2">صفر</option><option value="3">ربيع الأول</option>
+              <option value="4">ربيع الثاني</option><option value="5">جمادى الأولى</option><option value="6">جمادى الثانية</option>
+              <option value="7">رجب</option><option value="8">شعبان</option><option value="9">رمضان</option>
+              <option value="10">شوال</option><option value="11">ذو القعدة</option><option value="12">ذو الحجة</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">السنة الهجرية</label><input class="form-input" type="number" id="dc-hy" placeholder="مثال: 1446" min="1300" max="1600" /></div>
+      </div>`,
+    calc() {
+      const type = document.getElementById('dcG').classList.contains('active') ? 'gregorianToHijri' : 'hijriToGregorian';
+      const gregMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+      const dayNames  = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+      if (type === 'gregorianToHijri') {
+        const gd=+document.getElementById('dc-gd').value, gm=+document.getElementById('dc-gm').value, gy=+document.getElementById('dc-gy').value;
+        if (!gd||!gm||!gy) return;
+        const dt = new Date(gy, gm-1, gd, 12, 0, 0);
+        const arFmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'}).format(dt);
+        const enFmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',  {day:'numeric', month:'numeric', year:'numeric'}).format(dt);
+        return `<div class="result-grid"><div class="result-card primary">
+          <div class="result-card-label">التاريخ الهجري &nbsp;(تقويم أم القرى)</div>
+          <div class="result-card-value" style="font-size:1.55rem;line-height:1.3">${arFmt}</div>
+          <div style="margin-top:.4rem;font-size:.82rem;color:#6b7280">${enFmt}</div>
+        </div></div>`;
+
+      } else {
+        const hd=+document.getElementById('dc-hd').value, hm=+document.getElementById('dc-hm').value, hy=+document.getElementById('dc-hy').value;
+        if (!hd||!hm||!hy||hd<1||hd>30||hm<1||hm>12||hy<1300||hy>1600) return;
+
+        /* --- دقيق وسريع: تقدير يوم جوليوس ثم تصحيح بـ Intl في خطوات قليلة --- */
+        // تقدير ابتدائي: Julian Day Number للتاريخ الهجري (معادلة كوادي)
+        const JD = Math.floor((11*hy+3)/30) + 354*hy + 30*hm
+                  - Math.floor((hm-1)/2) + hd + 1948440 - 385;
+        // تحويل JD إلى ميلادي
+        function jdToDate(jd) {
+          let l = jd + 68569, n = Math.floor(4*l/146097);
+          l = l - Math.floor((146097*n+3)/4);
+          let i = Math.floor(4000*(l+1)/1461001);
+          l = l - Math.floor(1461*i/4) + 31;
+          let j = Math.floor(80*l/2447), d2 = l - Math.floor(2447*j/80);
+          l = Math.floor(j/11);
+          return new Date(100*(n-49)+i+l, j+2-12*l-1, d2, 12, 0, 0);
+        }
+        const startDate = jdToDate(JD);
+
+        // التحقق من Intl: نفحص ±3 أيام فقط (سريع جداً)
+        const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',
+                      {day:'numeric', month:'numeric', year:'numeric'});
+        let found = null;
+        for (let off = -3; off <= 3; off++) {
+          const test = new Date(startDate.getTime() + off*86400000);
+          test.setHours(12,0,0,0);
+          const parts = {};
+          fmt.formatToParts(test).forEach(p => { if(p.type!=='literal') parts[p.type]=+p.value; });
+          if (parts.year===hy && parts.month===hm && parts.day===hd) { found=test; break; }
+        }
+        if (!found) return `<div class="alert-box warning">⚠️ لم يتم إيجاد التاريخ، تأكد من صحة اليوم والشهر والسنة.</div>`;
+
+        return `<div class="result-grid"><div class="result-card primary">
+          <div class="result-card-label">التاريخ الميلادي &nbsp;(تقويم أم القرى)</div>
+          <div class="result-card-value" style="font-size:1.55rem;line-height:1.3">
+            ${found.getDate()} ${gregMonths[found.getMonth()]} ${found.getFullYear()}
+          </div>
+          <div style="margin-top:.4rem;font-size:.9rem;color:#059669;font-weight:700">${dayNames[found.getDay()]}</div>
+        </div></div>`;
+      }
+    },
+    seo:`<h2>التحويل الدقيق بين التقاويم</h2><p>نستخدم معايير دولية دقيقة للتحويل بين التقويم الهجري (تقويم أم القرى) والتقويم الميلادي.</p><p>التقويم الهجري يعتمد على دورة القمر، بينما الميلادي يعتمد على دورة الشمس، وهذا المحول يأخذ كافة الفروقات الزمنية بينهما.</p>`,
+  },
+
+};
+
+// ─── OPEN CALC ──────────────────────────────────────────
+function openCalc(id) {
+  const def = calcs[id];
+  if (!def) return;
+  const faqsHtml = def.faqs ? `
+    <div class="faq-section">
+      <h2 class="faq-title">الأسئلة الشائعة</h2>
+      <div class="faq-list">
+        ${def.faqs.map((f,i)=>`
+          <div class="faq-item" id="faq${i}">
+            <div class="faq-q" onclick="toggleFaq(${i})">
+              <span>${f.q}</span>
+              <svg class="faq-chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-a">${f.a}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  document.getElementById('calcContent').innerHTML = `
+    <div class="calc-header">
+      <div class="calc-icon-wrap">${def.icon}</div>
+      <h1 class="calc-title">${def.title}</h1>
+      <p class="calc-desc">${def.desc}</p>
+    </div>
+    <div class="calc-card">
+      ${def.form}
+      <button class="calc-btn" onclick="runCalc('${id}')">احسب</button>
+      <div class="result-wrap" id="resultArea"></div>
+    </div>
+    <div class="seo-content">${def.seo||''}</div>
+    ${faqsHtml}
+  `;
+  showPage('calc');
+}
+
+function runCalc(id) {
+  const def = calcs[id];
+  if (!def) return;
+  const html = def.calc();
+  const area = document.getElementById('resultArea');
+  if (html && area) area.innerHTML = html;
+}
+
+// ─── HELPER FUNCS ───────────────────────────────────────
+function vatModeChange(radio) {
+  document.getElementById('vat-ex-lbl').classList.toggle('selected', radio.value==='exclusive');
+  document.getElementById('vat-in-lbl').classList.toggle('selected', radio.value==='inclusive');
+}
+function toggleGender(g) {
+  document.getElementById('tbm').classList.toggle('active', g==='male');
+  document.getElementById('tbf').classList.toggle('active', g==='female');
+}
+let currentUnitIdx=0;
+function setUnit(idx, type) {
+  [0,1,2,3].forEach(i => {
+    const btn=document.getElementById('utb'+i);
+    if(btn) btn.classList.toggle('active', i===idx);
+    if(btn) btn.dataset.utype = ['mToKm','kmToM','kgToG','gToKg'][i];
+  });
+}
+function setDateConvType(type) {
+  document.getElementById('dcG').classList.toggle('active', type==='gregorianToHijri');
+  document.getElementById('dcH').classList.toggle('active', type==='hijriToGregorian');
+  const gregFields = document.getElementById('dc-greg-fields');
+  const hijriFields = document.getElementById('dc-hijri-fields');
+  if (gregFields) gregFields.style.display = type==='gregorianToHijri' ? 'block' : 'none';
+  if (hijriFields) hijriFields.style.display = type==='hijriToGregorian' ? 'block' : 'none';
+  const resultArea = document.getElementById('resultArea');
+  if (resultArea) resultArea.innerHTML = '';
+}
+
+function toggleFaq(i) {
+  document.getElementById('faq'+i).classList.toggle('open');
+}
+function submitContact() {
+  const n=document.getElementById('c-name').value.trim();
+  const e=document.getElementById('c-email').value.trim();
+  if (!n||!e) return;
+  document.getElementById('contactSuccess').style.display='block';
+  ['c-name','c-email','c-subject','c-msg'].forEach(id=>document.getElementById(id).value='');
+  setTimeout(()=>document.getElementById('contactSuccess').style.display='none', 5000);
+}
+
+
+// INIT
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+renderCountdown();
+renderTools(categories);
+</script>
+</body>
+</html>
